@@ -16,7 +16,6 @@ import axios from './API/axios.js';
 import CPanelHome from './Components/CPanel/CPanelHome.jsx';
 import UsersControl from './Components/CPanel/Controls/UsersControl';
 import SplashScreen from './common/SplashScreen.jsx';
-import AdminsControl from './Components/CPanel/Controls/AdminsControl';
 import CategoriesControl from './Components/CPanel/Controls/CategoriesControl';
 import ProductsControl from './Components/CPanel/Controls/ProductsControl';
 
@@ -45,7 +44,6 @@ function App() {
   const logout = async () => {
     try {
       const res = await axios.get("/users/logout");
-      console.log(res)
       setAuth(null)
     } catch (err) {
       console.log(err)
@@ -70,11 +68,7 @@ function App() {
             <Route
               index
               element={<ProtectedRoute> <CPanelHome /></ProtectedRoute>}
-            />
-            <Route
-              path="admins"
-              element={<ProtectedRoute roles={[allRoles.SA]}> <AdminsControl /></ProtectedRoute>}
-            />
+            />            
             <Route
               path="users"
               element={<ProtectedRoute roles={[allRoles.A, allRoles.SA]}> <UsersControl /></ProtectedRoute>}
@@ -132,7 +126,7 @@ function App() {
       </BrowserRouter>
 
       <ToastContainer
-        position="top-right"
+        position="top-left"
         autoClose={5000}
         closeOnClick
         rtl={false}
@@ -140,6 +134,7 @@ function App() {
         draggable
         pauseOnHover
         stacked
+        theme='dark'
       />
     </div>}
   </>

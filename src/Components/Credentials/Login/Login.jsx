@@ -6,6 +6,7 @@ import InputField from "../Fields/InputField.jsx";
 import { loginSchema } from "../schemas.js";
 import axios from './../../../API/axios';
 import { toast } from "react-toastify";
+import LoadingScreen from "../../../common/Loading.jsx";
 
 
 export default function Login({ validateUser }) {
@@ -19,12 +20,12 @@ export default function Login({ validateUser }) {
         try {
             const response = await axios.post("/auth/signin", values);
             if (response.status === 200) {
-                toast.success("Logged in!..", { theme: "dark", });
-                validateUser()
+                toast.success("Logged in!..", { theme: "dark" });
+                await validateUser()
                 navigate("/")
             }
-        } catch (error) {            
-            toast.error(error.response?.data?.message||"Something went wrong" , {
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Something went wrong", {
                 theme: "dark",
             });
         } finally {
@@ -44,6 +45,7 @@ export default function Login({ validateUser }) {
 
     return (
         <>
+            {isLoading && <LoadingScreen fullScreen={true} />}
             <section className="bg-gray-50 dark:bg-gray-900">
                 <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
                     <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">

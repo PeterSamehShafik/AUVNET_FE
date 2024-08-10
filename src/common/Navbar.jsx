@@ -2,12 +2,13 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../context/AuthProvider.jsx'
 import { Link, NavLink } from 'react-router-dom';
 
-import { FiLogIn } from "react-icons/fi";
+import { FiLogIn, FiRefreshCcw } from "react-icons/fi";
 import Logo from './../assets/Logo';
 import {
     MdOutlineLightMode,
     MdOutlineDarkMode
 } from 'react-icons/md'
+import LoadingScreen from './Loading.jsx';
 
 export default function Navbar({ logout }) {
     const Mode = { Dark: 'dark', Light: 'light' }
@@ -40,6 +41,14 @@ export default function Navbar({ logout }) {
 
     const contextValue = useContext(AuthContext);
     const { auth, setAuth } = contextValue || {}
+
+    const [loading, setLoading] = useState(false)
+    const handleLogout = async () => {
+        setLoading(true)
+        await logout()
+        setLoading(false)
+
+    }
 
     return <>
         <nav className="bg-gray-200 shadow shadow-gray-300 w-100 px-8 md:px-auto mb-5">
@@ -84,12 +93,22 @@ export default function Navbar({ logout }) {
                     {auth ?
                         <div className="flex items-center gap-4 p-4 py-2 bg-gray-800  text-white  rounded-xl shadow-md">
                             <span className="font-semibold text-lg">Hello, {auth.userName}</span>
-                            <button
-                                onClick={logout}
-                                className="bg-gray-600 hover:bg-gray-500  text-gray-100  rounded-full px-4 py-2 text-sm transition-colors duration-300"
-                            >
-                                Logout
-                            </button>
+                            {loading ? <>
+                                <LoadingScreen fullScreen={true} />
+
+                                <button
+                                    className="cursor-not-allowed bg-gray-600 hover:bg-gray-500  text-gray-100  rounded-full px-4 py-2 text-sm transition-colors duration-300"
+                                >
+                                    <FiRefreshCcw className="w-6 h-6 ms-2 animate-spin" />
+                                </button>
+                            </>
+                                :
+                                <button
+                                    onClick={handleLogout}
+                                    className="bg-gray-600 hover:bg-gray-500  text-gray-100  rounded-full px-4 py-2 text-sm transition-colors duration-300"
+                                >
+                                    Logout
+                                </button>}
                         </div>
 
                         :

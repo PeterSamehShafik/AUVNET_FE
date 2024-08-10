@@ -3,15 +3,12 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthProvider.jsx";
-import { LoadingProvider } from "./context/LoadingProvider.jsx";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <LoadingProvider>
-        <App />
-      </LoadingProvider>
+      <App />
     </AuthProvider>
   </React.StrictMode>
 );

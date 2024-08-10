@@ -1,19 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import DataTable from '../DataTable.jsx';
 import LoadingScreen from './../../../common/Loading';
 import axios from './../../../API/axios';
 import { toast } from 'react-toastify';
 import ErrorText from './../../../common/Error';
-
+import { AuthContext } from './../../../context/AuthProvider';
+import { allRoles } from './../../../Routes/ProtectedRoute';
+import useChangeTitle from './../../../hooks/useChangeTitle';
 
 const UsersControl = () => {
+    useChangeTitle('Users Control')
     const [users, setUsers] = useState('loading');
     const [totalUsers, setTotalUsers] = useState(0);
     const [pages, setPages] = useState(0);
+    const { auth } = useContext(AuthContext)
 
-    const fetchUsers = async (page = 1, size = 5) => {
+    const fetchUsers = async (page = 1, size = 5, role = '') => {
         try {
-            const response = await axios.get(`/users?page=${page}&size=${size}`);
+            let response;
+            if (auth.role === allRoles.SA) {
+                const roleQuery = role !== '' ? `&role=${role}` : ''
+                response = await axios.get(`/admins?page=${page}&size=${size}${roleQuery}`);
+            } else if (auth.role === allRoles.A) {
+                response = await axios.get(`/users?page=${page}&size=${size}`);
+            }
             setUsers(response.data.data.users)
             setTotalUsers(response.data.data.total)
             setPages(response.data.data.totalPages)
@@ -27,32 +37,32 @@ const UsersControl = () => {
     }, [])
 
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (type, id, page, size, filter) => {
         try {
-            const response = await axios.patch(`/users/${id}/remove`);
+            let response;
+            if (auth.role === allRoles.SA) {
+                response = await axios.patch(`/admins/${id}/${type}`);
+            } else if (auth.role === allRoles.A) {
+                response = await axios.patch(`/users/${id}/${type}`);
+            }
 
             if (response.data?.statusCode === 200) {
-                toast.success("User Deleted Successfully")
+                const msg = type === 'remove' ? 'Deleted' : 'Restored'
+                toast.success(`User ${msg} Successfully`)
             }
-            await fetchUsers()
+            await fetchUsers(page, size, filter)
         } catch (error) {
             console.log(error)
-            toast.error('Failed to delete user. Please try again later.'); // Show error toast
+            const msg = type === 'remove' ? 'delete' : 'restore'
+            toast.error(`Failed to ${msg} user. Please try again later.`); // Show error toast
             setUsers('error')
         }
     };
-    const handleUnDelete = async (id) => {
-        try {
-            const response = await axios.patch(`/users/${id}/unremove`);
-            if (response.data?.statusCode === 200) {
-                toast.success("User Restored Successfully")
-            }
-            await fetchUsers()
-        } catch (error) {
-            toast.error('Failed to restore user. Please try again later.'); // Show error toast
-            setUsers('error')
-        }
-    };
+
+    const handleEdit = async () => {
+
+    }
+
 
     return (
         <div className="px-4">
@@ -66,9 +76,10 @@ const UsersControl = () => {
                             pages={pages}
                             total={totalUsers}
                             onDelete={handleDelete}
-                            onUnDelete={handleUnDelete}
-                            rows={['userName', 'email']}
-                            actions={['delete']}
+                            onEdit={handleEdit}
+                            rows={['userName', 'email', 'role']}
+                            actions={['edit', 'delete']}
+                            userFilter={true}
                         />
             }
         </div>

@@ -12,12 +12,6 @@ const CPanelHome = () => {
   const location = useLocation();
   const data = [
     {
-      name: 'Admins Control',
-      description: "Manage admin users, set permissions, and more.",
-      route: 'admins',
-      roles: [allRoles.SA]
-    },
-    {
       name: 'Users Control',
       description: 'View, edit, and manage users in the system.',
       route: 'users',

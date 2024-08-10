@@ -1,44 +1,49 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, IconButton, Paper, Tooltip, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, IconButton, Paper, Tooltip, Typography, MenuItem, InputLabel, FormControl, Select } from '@mui/material';
 
 import { MdArrowBack, MdDelete, MdEdit, MdRestore } from "react-icons/md";
 import { Link } from 'react-router-dom';
 import LoadingScreen from '../../common/Loading.jsx';
+import { allRoles } from '../../Routes/ProtectedRoute.jsx';
 
 
-const DataTable = ({title, data, fetchData, pages, total, onEdit, onDelete, onUnDelete, rows, actions }) => {
+const DataTable = ({ title, data, fetchData, pages, total, onEdit, onDelete, rows, actions, userFilter = false }) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [loading, setLoading] = useState(false);
+    const [filter, setFilter] = useState(''); // Filter state
 
     const handleChangePage = async (event, newPage) => {
         setLoading(true)
         setPage(newPage);
-        await fetchData(newPage + 1, rowsPerPage)
+        await fetchData(newPage + 1, rowsPerPage, filter)
         setLoading(false)
     };
 
     const handleChangeRowsPerPage = async (event) => {
         setLoading(true)
         setRowsPerPage(parseInt(event.target.value, 10));
-        await fetchData(1, parseInt(event.target.value, 10))
+        await fetchData(1, parseInt(event.target.value, 10), filter)
         setPage(0);
         setLoading(false)
     };
 
-    const handleDelete = async (id) => {
+    const handleFilterChange = async (event) => {
+        setLoading(true);
+        setFilter(event.target.value);
+        await fetchData(1, rowsPerPage, event.target.value); // Fetch data based on filter
+        setPage(0);
+        setLoading(false);
+    };
+
+    const handleDelete = async (type, id) => {
         setLoading(true)
-        await onDelete(id, page + 1, rowsPerPage)
-        setLoading(false)
-    }
-    const handleUnDelete = async (id) => {
-        setLoading(true)
-        await onUnDelete(id, page + 1, rowsPerPage)
+        await onDelete(type, id, page + 1, rowsPerPage, filter)
         setLoading(false)
     }
 
     return <>
-        <div className="mb-4 flex items-center ">
+        <div className="mb-4 flex items-center justify-between">
             <Link
                 to='/cpanel'
                 className="flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-md transition-colors duration-300"
@@ -48,10 +53,27 @@ const DataTable = ({title, data, fetchData, pages, total, onEdit, onDelete, onUn
             </Link>
         </div>
 
+
         <Paper className="dark:bg-gray-800 p-4 rounded-lg shadow-md">
-            <Typography variant="h6" className="text-gray-900 dark:text-gray-200 mb-4">
-                {title}
-            </Typography>
+            <div className="flex items-center justify-center space-x-4">
+                <Typography variant="h6" className="text-gray-900 dark:text-gray-200 mb-4">
+                    {title}
+                </Typography>
+                {userFilter && <FormControl variant="outlined" className="w-48">
+                    <InputLabel className="text-gray-900 dark:text-gray-200">Filter By</InputLabel>
+                    <Select
+                        value={filter}
+                        onChange={handleFilterChange}
+                        className="text-gray-900 dark:text-gray-200"
+                        label="Filter By"
+                    >
+                        <MenuItem value="">All</MenuItem>
+                        <MenuItem value={allRoles.U}>Users</MenuItem>
+                        <MenuItem value={allRoles.A}>Admins</MenuItem>
+                    </Select>
+                </FormControl>}
+
+            </div>
             <TableContainer className='relative'>
                 {loading &&
                     <div className='absolute w-full h-full z-50 flex items-center justify-center bg-black bg-opacity-50'>
@@ -70,33 +92,40 @@ const DataTable = ({title, data, fetchData, pages, total, onEdit, onDelete, onUn
                     <TableBody>
                         {data.map((row, idx) => (
                             <TableRow key={idx}>
-                                {rows.map((key) => (
-                                    row.hasOwnProperty(key) && ( // Check if the row contains the key
+                                {rows.map((key) => {
+                                    const value = row[key];
+                                    return (
                                         <TableCell key={key} className="text-gray-900 dark:text-gray-200">
-                                            {row[key]}
+                                            {typeof value === 'object' && value !== null ?
+                                                value.userName || value.name||"N/A"
+                                                :
+                                                value // Otherwise, just display the value
+                                            }
                                         </TableCell>
-                                    )
-                                ))}
+                                    );
+                                })}
                                 {actions?.includes('edit') && <TableCell>
-                                    <Tooltip title="edit" arrow placement="top">
-                                        <IconButton onClick={() => onEdit(row._id)} color="primary">
-                                            <MdEdit size={25} />
-                                        </IconButton>
-                                    </Tooltip>
+                                    {row.role === allRoles.SA ? '' :
+                                        <Tooltip title="edit" arrow placement="top">
+                                            <IconButton onClick={() => onEdit(row._id)} color="primary">
+                                                <MdEdit size={25} />
+                                            </IconButton>
+                                        </Tooltip>}
                                 </TableCell>}
                                 {actions?.includes('delete') && <TableCell>
                                     {row.isDeleted ?
                                         <Tooltip title="Restore" arrow placement="top">
-                                            <IconButton onClick={() => handleUnDelete(row._id)} color="success">
+                                            <IconButton onClick={() => handleDelete('unremove', row._id)} color="success">
                                                 <MdRestore size={25} />
                                             </IconButton>
                                         </Tooltip>
                                         :
-                                        <Tooltip title="Delete" arrow placement="top">
-                                            <IconButton onClick={() => handleDelete(row._id)} color="secondary">
-                                                <MdDelete size={25} />
-                                            </IconButton>
-                                        </Tooltip>
+                                        row.role === allRoles.SA ? '' :
+                                            <Tooltip title="Delete" arrow placement="top">
+                                                <IconButton onClick={() => handleDelete('remove', row._id)} color="secondary">
+                                                    <MdDelete size={25} />
+                                                </IconButton>
+                                            </Tooltip>
 
                                     }
                                 </TableCell>}
@@ -108,7 +137,7 @@ const DataTable = ({title, data, fetchData, pages, total, onEdit, onDelete, onUn
             <TablePagination
                 rowsPerPageOptions={[5, 10, 15, 25, 50, 100]}
                 component="div"
-                count={rowsPerPage * pages}
+                count={total}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
