@@ -29,7 +29,7 @@ const WishlistPage = () => {
             setLoading(true)
             await axios.delete('/wishlist', {
                 data: {
-                    product: id 
+                    product: id
                 }
             });
             await fetchWishlist()
