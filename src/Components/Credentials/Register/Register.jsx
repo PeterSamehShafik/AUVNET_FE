@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useChangeTitle from "../../../hooks/useChangeTitle";
 import { useFormik } from "formik";
-import InputField from "../Fields/InputField.jsx";
 import { registerSchema } from "../schemas.js";
 import axios from "../../../API/axios.js";
 import { toast } from "react-toastify";
+import InputField from "../../../common/Fields/InputField.jsx";
 
 
 export default function Register() {

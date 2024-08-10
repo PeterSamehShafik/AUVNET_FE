@@ -14,6 +14,7 @@ const UsersControl = () => {
     const [totalUsers, setTotalUsers] = useState(0);
     const [pages, setPages] = useState(0);
     const { auth } = useContext(AuthContext)
+    const [isSA, setIsSA] = useState(false);
 
     const fetchUsers = async (page = 1, size = 5, role = '') => {
         try {
@@ -34,6 +35,8 @@ const UsersControl = () => {
     };
     useEffect(() => {
         fetchUsers()
+        setIsSA(auth.role === allRoles.SA)
+
     }, [])
 
 
@@ -73,13 +76,12 @@ const UsersControl = () => {
                             title='Users Control'
                             data={users}
                             fetchData={fetchUsers}
-                            pages={pages}
                             total={totalUsers}
                             onDelete={handleDelete}
                             onEdit={handleEdit}
                             rows={['userName', 'email', 'role']}
-                            actions={['edit', 'delete']}
-                            userFilter={true}
+                            actions={isSA ? ['edit', 'delete', 'add'] : ['delete']}
+                            userFilter={isSA ? true : false}
                         />
             }
         </div>

@@ -18,9 +18,12 @@ import UsersControl from './Components/CPanel/Controls/UsersControl';
 import SplashScreen from './common/SplashScreen.jsx';
 import CategoriesControl from './Components/CPanel/Controls/CategoriesControl';
 import ProductsControl from './Components/CPanel/Controls/ProductsControl';
+import FormPage from './common/FormPage.jsx';
+import WishlistPage from './Components/Wishlist/Wishlist';
 
 
-function App() {
+
+function App() {  
 
   const contextValue = useContext(AuthContext);
   const { auth, setAuth } = contextValue || {}
@@ -68,24 +71,68 @@ function App() {
             <Route
               index
               element={<ProtectedRoute> <CPanelHome /></ProtectedRoute>}
-            />            
+            />
             <Route
               path="users"
-              element={<ProtectedRoute roles={[allRoles.A, allRoles.SA]}> <UsersControl /></ProtectedRoute>}
-            />
+            >
+              <Route
+                index
+                element={<ProtectedRoute roles={[allRoles.A, allRoles.SA]}> <UsersControl /></ProtectedRoute>}
+              />
+              <Route
+                path="add"
+                element={<ProtectedRoute roles={[allRoles.SA]}> <FormPage /></ProtectedRoute>}
+              />
+              <Route
+                path="*"
+                element={<Navigate to="/404" />}
+              />
+
+            </Route>
             <Route
               path="categories"
-              element={<ProtectedRoute roles={[allRoles.A, allRoles.SA]}> <CategoriesControl /></ProtectedRoute>}
-            />
+            >
+              <Route
+                index
+                element={<ProtectedRoute roles={[allRoles.A, allRoles.SA]}> <CategoriesControl /></ProtectedRoute>}
+              />
+              <Route
+                path="add"
+                element={<ProtectedRoute roles={[allRoles.A, allRoles.SA]}> <FormPage /></ProtectedRoute>}
+              />
+              <Route
+                path="*"
+                element={<Navigate to="/404" />}
+              />
+
+            </Route>
             <Route
               path="products"
-              element={<ProtectedRoute roles={[allRoles.A, allRoles.SA, allRoles.U]}> <ProductsControl /></ProtectedRoute>}
-            />
+            >
+              <Route
+                index
+                element={<ProtectedRoute roles={[allRoles.A, allRoles.SA, allRoles.U]}> <ProductsControl /></ProtectedRoute>}
+              />
+              <Route
+                path="add"
+                element={<ProtectedRoute roles={[allRoles.U]}> <FormPage /></ProtectedRoute>}
+              />
+              <Route
+                path="*"
+                element={<Navigate to="/404" />}
+              />
+
+            </Route>
             <Route
               path="*"
               element={<Navigate to="/404" />}
             />
           </Route>
+
+          <Route
+            path='wishlist'
+            element={<ProtectedRoute roles={[allRoles.U]}> <WishlistPage /></ProtectedRoute>}
+          />
 
           {/* <Route path='profile' element={<Profile crrUser={crrUser} currentUser={currentUser} />} >
             <Route

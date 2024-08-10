@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, IconButton, Paper, Tooltip, Typography, MenuItem, InputLabel, FormControl, Select } from '@mui/material';
+import React, { useContext, useState } from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, IconButton, Paper, Tooltip, Typography, MenuItem, InputLabel, FormControl, Select, Button, Modal, Box, TextField } from '@mui/material';
+import { useFormik } from 'formik';
 
-import { MdArrowBack, MdDelete, MdEdit, MdRestore } from "react-icons/md";
-import { Link } from 'react-router-dom';
+import { MdAdd, MdArrowBack, MdClose, MdDelete, MdEdit, MdRestore } from "react-icons/md";
+import { Link, useNavigate } from 'react-router-dom';
 import LoadingScreen from '../../common/Loading.jsx';
 import { allRoles } from '../../Routes/ProtectedRoute.jsx';
 
 
-const DataTable = ({ title, data, fetchData, pages, total, onEdit, onDelete, rows, actions, userFilter = false }) => {
+const DataTable = ({ title, data, fetchData, total, addInputs, onEdit, onDelete, rows, actions, userFilter = false }) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [loading, setLoading] = useState(false);
@@ -41,6 +42,14 @@ const DataTable = ({ title, data, fetchData, pages, total, onEdit, onDelete, row
         await onDelete(type, id, page + 1, rowsPerPage, filter)
         setLoading(false)
     }
+    const navigate = useNavigate();
+
+    // When you want to navigate with data:
+    const handleOpenPage = () => {
+        const nav = title.split(' ')[0]
+        navigate(`/cpanel/${nav.charAt(0).toLowerCase() + nav.slice(1)}/add`);
+    };
+
 
     return <>
         <div className="mb-4 flex items-center justify-between">
@@ -51,6 +60,17 @@ const DataTable = ({ title, data, fetchData, pages, total, onEdit, onDelete, row
                 <MdArrowBack className="mr-2" />
                 <span>Back to CPanel</span>
             </Link>
+
+            {actions?.includes('add') && <Button
+                variant='contained'
+                size="large"
+                color='success'
+                startIcon={<MdAdd />}
+                className="bg-green-500 hover:bg-green-600 text-white rounded-lg shadow-md"
+                onClick={handleOpenPage}
+            >
+                Add New
+            </Button>}
         </div>
 
 
@@ -64,7 +84,7 @@ const DataTable = ({ title, data, fetchData, pages, total, onEdit, onDelete, row
                     <Select
                         value={filter}
                         onChange={handleFilterChange}
-                        className="text-gray-900 dark:text-gray-200"
+                        className="text-gray-900 dark:text-gray-200 border dark:border-slate-100 "
                         label="Filter By"
                     >
                         <MenuItem value="">All</MenuItem>
@@ -97,7 +117,7 @@ const DataTable = ({ title, data, fetchData, pages, total, onEdit, onDelete, row
                                     return (
                                         <TableCell key={key} className="text-gray-900 dark:text-gray-200">
                                             {typeof value === 'object' && value !== null ?
-                                                value.userName || value.name||"N/A"
+                                                value.userName || value.name || "N/A"
                                                 :
                                                 value // Otherwise, just display the value
                                             }
@@ -145,6 +165,10 @@ const DataTable = ({ title, data, fetchData, pages, total, onEdit, onDelete, row
                 className="text-gray-900 dark:text-gray-200"
             />
         </Paper >
+
+        {/* {addInputs&&<CustomModal type='Add' title={title} inputs={addInputs} setModalOpen={setModalOpen} isModalOpen={isModalOpen} formik={addFormik} dropSelect={addDropSelect} />} */}
+        {/* {editInputs && <CustomModal type='Edit' title={title} inputs={editInputs} setModalOpen={setModalOpen} isModalOpen={isModalOpen} formik={editFormik} dropSelect={editDropSelect} />} */}
+
     </>
 };
 

@@ -2,11 +2,11 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useChangeTitle from "../../../hooks/useChangeTitle";
 import { useFormik } from "formik";
-import InputField from "../Fields/InputField.jsx";
 import { loginSchema } from "../schemas.js";
 import axios from './../../../API/axios';
 import { toast } from "react-toastify";
 import LoadingScreen from "../../../common/Loading.jsx";
+import InputField from "../../../common/Fields/InputField.jsx";
 
 
 export default function Login({ validateUser }) {

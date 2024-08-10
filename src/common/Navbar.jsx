@@ -9,6 +9,7 @@ import {
     MdOutlineDarkMode
 } from 'react-icons/md'
 import LoadingScreen from './Loading.jsx';
+import { allRoles } from '../Routes/ProtectedRoute.jsx';
 
 export default function Navbar({ logout }) {
     const Mode = { Dark: 'dark', Light: 'light' }
@@ -59,7 +60,7 @@ export default function Navbar({ logout }) {
                 <div className="text-gray-500 order-3 w-full md:w-auto md:order-2">
                     <ul className="flex font-semibold justify-between">
                         {auth ?
-                            ['Home', 'CPanel', 'Wishlist'].map((ele, idx) =>
+                            ['Home', 'CPanel'].map((ele, idx) =>
                                 <li key={idx} className="md:px-4 md:py-2 hover:text-indigo-400">
                                     <NavLink
                                         className={({ isActive }) =>
@@ -77,6 +78,13 @@ export default function Navbar({ logout }) {
                                     to='/'>Home</NavLink>
                             </li>
                         }
+                        {auth && auth.role === allRoles.U ? <li className="md:px-4 md:py-2 hover:text-indigo-400">
+                            <NavLink
+                                className={({ isActive }) =>
+                                    isActive ? "text-indigo-500" : ""
+                                }
+                                to='wishlist'>Wishlist</NavLink>
+                        </li> : ''}
                         {mode === 'dark' ?
                             <div onClick={() => setMode(Mode.Light)} className="h-10 w-10 flex items-center justify-center rounded-lg cursor-pointer hover:text-gray-800 hover:bg-white  hover:duration-300 hover:ease-linear focus:bg-white">
                                 <MdOutlineLightMode size={25} />

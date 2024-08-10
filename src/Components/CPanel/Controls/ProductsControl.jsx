@@ -7,13 +7,16 @@ import ErrorText from './../../../common/Error';
 import { AuthContext } from './../../../context/AuthProvider';
 import { allRoles } from './../../../Routes/ProtectedRoute';
 import useChangeTitle from './../../../hooks/useChangeTitle';
+import { addProductSchema, editProductSchema } from '../schemas.js';
 
 const ProductsControl = () => {
     useChangeTitle('Products Control')
     const [products, setProducts] = useState('loading');
     const [totalProducts, setTotalProducts] = useState(0);
     const [pages, setPages] = useState(0);
+    const [isUser, setIsUser] = useState(false);
     const { auth } = useContext(AuthContext)
+    const [categories, setCategories] = useState('loading');
 
     const fetchProducts = async (page = 1, size = 5, role = '') => {
         try {
@@ -33,7 +36,10 @@ const ProductsControl = () => {
     };
     useEffect(() => {
         fetchProducts()
+        setIsUser(auth.role === allRoles.U)
     }, [])
+
+
 
 
     const handleDelete = async (type, id, page, size, filter) => {
@@ -67,12 +73,11 @@ const ProductsControl = () => {
                             title='Products Control'
                             data={products}
                             fetchData={fetchProducts}
-                            pages={pages}
                             total={totalProducts}
                             onDelete={handleDelete}
                             onEdit={handleEdit}
                             rows={['name', 'description', 'price', 'createdBy', 'category']}
-                            actions={['edit', 'delete']}
+                            actions={isUser ? ['edit', 'delete', 'add'] : ['edit', 'delete']}
                         />
             }
         </div>

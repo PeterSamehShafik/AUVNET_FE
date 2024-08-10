@@ -36,9 +36,9 @@ const CategoriesControl = () => {
         try {
             let response = await axios.delete(`/categories/${id}`);
 
-            if (response.data?.statusCode === 204) {
+            if (response.status === 204) {
                 const msg = type === 'remove' ? 'Deleted' : 'Restored'
-                toast.success(`Product ${msg} Successfully`)
+                toast.success(`Category ${msg} Successfully`)
             }
             await fetchCategories(page, size, filter)
         } catch (error) {
@@ -63,12 +63,11 @@ const CategoriesControl = () => {
                             title='Categories Control'
                             data={categories}
                             fetchData={fetchCategories}
-                            pages={pages}
                             total={totalCategories}
                             onDelete={handleDelete}
                             onEdit={handleEdit}
                             rows={['name', 'createdBy']}
-                            actions={['edit', 'delete']}
+                            actions={['edit', 'delete', 'add']}                            
                         />
             }
         </div>
