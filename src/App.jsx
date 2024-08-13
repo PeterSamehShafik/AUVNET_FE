@@ -18,12 +18,14 @@ import UsersControl from './Components/CPanel/Controls/UsersControl';
 import SplashScreen from './common/SplashScreen.jsx';
 import CategoriesControl from './Components/CPanel/Controls/CategoriesControl';
 import ProductsControl from './Components/CPanel/Controls/ProductsControl';
-import FormPage from './common/FormPage.jsx';
 import WishlistPage from './Components/Wishlist/Wishlist';
+import AddData from './Components/CPanel/FormPage/Control/AddData';
+import EditData from './Components/CPanel/FormPage/Control/EditData.jsx';
 
 
 
-function App() {  
+
+function App() {
 
   const contextValue = useContext(AuthContext);
   const { auth, setAuth } = contextValue || {}
@@ -35,7 +37,7 @@ function App() {
       if (response.data?.data?.user) {
         setAuth(response.data.data.user)
       } else {
-        setAuth(null)
+        logout()
       }
     } catch (err) {
       console.log(err)
@@ -72,16 +74,18 @@ function App() {
               index
               element={<ProtectedRoute> <CPanelHome /></ProtectedRoute>}
             />
-            <Route
-              path="users"
-            >
+            <Route path="users">
               <Route
                 index
                 element={<ProtectedRoute roles={[allRoles.A, allRoles.SA]}> <UsersControl /></ProtectedRoute>}
               />
               <Route
                 path="add"
-                element={<ProtectedRoute roles={[allRoles.SA]}> <FormPage /></ProtectedRoute>}
+                element={<ProtectedRoute roles={[allRoles.SA]}> <AddData /></ProtectedRoute>}
+              />
+              <Route
+                path="edit/:id"
+                element={<ProtectedRoute roles={[allRoles.SA]}> <EditData /></ProtectedRoute>}
               />
               <Route
                 path="*"
@@ -89,16 +93,18 @@ function App() {
               />
 
             </Route>
-            <Route
-              path="categories"
-            >
+            <Route path="categories" element={<ProtectedRoute roles={[allRoles.A, allRoles.SA]} />}>
               <Route
                 index
-                element={<ProtectedRoute roles={[allRoles.A, allRoles.SA]}> <CategoriesControl /></ProtectedRoute>}
+                element={<CategoriesControl />}
               />
               <Route
                 path="add"
-                element={<ProtectedRoute roles={[allRoles.A, allRoles.SA]}> <FormPage /></ProtectedRoute>}
+                element={<AddData />}
+              />
+              <Route
+                path="edit/:id"
+                element={<EditData />}
               />
               <Route
                 path="*"
@@ -106,16 +112,18 @@ function App() {
               />
 
             </Route>
-            <Route
-              path="products"
-            >
+            <Route path="products">
               <Route
                 index
                 element={<ProtectedRoute roles={[allRoles.A, allRoles.SA, allRoles.U]}> <ProductsControl /></ProtectedRoute>}
               />
               <Route
                 path="add"
-                element={<ProtectedRoute roles={[allRoles.U]}> <FormPage /></ProtectedRoute>}
+                element={<ProtectedRoute roles={[allRoles.U]}> <AddData /></ProtectedRoute>}
+              />
+              <Route
+                path="edit/:id"
+                element={<ProtectedRoute roles={[allRoles.U]}> <EditData /></ProtectedRoute>}
               />
               <Route
                 path="*"
@@ -123,8 +131,7 @@ function App() {
               />
 
             </Route>
-            <Route
-              path="*"
+            <Route path="*"
               element={<Navigate to="/404" />}
             />
           </Route>

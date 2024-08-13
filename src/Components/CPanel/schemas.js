@@ -9,18 +9,9 @@ export const addProductSchema = Yup.object().shape({
   category: Yup.string().required("Category is required"),
 });
 
-export const editProductSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
-  description: Yup.string().required("Description is required"),
-  price: Yup.number()
-    .required("Price is required")
-    .positive("Price must be positive"),
-  category: Yup.string().required("Category is required"),
-});
-
 export const addCategorySchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
-  parentCategory: Yup.string().required("Description is required"),
+  parentCategory: Yup.string().optional(),
 });
 export const addUserSchema = Yup.object().shape({
   userName: Yup.string()
@@ -34,4 +25,23 @@ export const addUserSchema = Yup.object().shape({
     .min(8, "Password must be at least 8 characters")
     .max(30, "Password must not exceed 30 characters")
     .required("Password is required"),
+});
+
+/////////////edit schea
+
+export const editProductSchema = Yup.object().shape({
+  name: Yup.string().optional(),
+  description: Yup.string().optional(),
+  price: Yup.number().optional().positive("Price must be positive"),
+  category: Yup.string().optional(),
+});
+
+export const editCategorySchema = Yup.object().shape({
+  name: Yup.string().required('Name is required'),
+});
+
+export const editUserSchema = Yup.object().shape({
+  role: Yup.string()
+    .oneOf(["User", "Admin"], "Invalid role") // Ensures the role is either 'User' or 'Admin'
+    .required("Role is required"), // Ensures the role field is not empty
 });

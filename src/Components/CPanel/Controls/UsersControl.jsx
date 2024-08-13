@@ -29,7 +29,7 @@ const UsersControl = () => {
             setTotalUsers(response.data.data.total)
             setPages(response.data.data.totalPages)
         } catch (error) {
-            toast.error('Failed to fetch users. Please try again later.'); // Show error toast
+            toast.error(error.response?.data?.message || 'Failed to fetch users. Please try again later.'); // Show error toast
             setUsers('error')
         }
     };
@@ -57,7 +57,7 @@ const UsersControl = () => {
         } catch (error) {
             console.log(error)
             const msg = type === 'remove' ? 'delete' : 'restore'
-            toast.error(`Failed to ${msg} user. Please try again later.`); // Show error toast
+            toast.error(error.response?.data?.message || `Failed to ${msg} user. Please try again later.`); // Show error toast
             setUsers('error')
         }
     };
@@ -69,21 +69,19 @@ const UsersControl = () => {
 
     return (
         <div className="px-4">
-            {users === 'loading' ? <LoadingScreen /> :
-                users === 'error' ? <ErrorText handleRefresh={fetchUsers} /> :
-                    !users?.length ? <ErrorText handleRefresh={fetchUsers} text='No users found' /> :
-                        <DataTable
-                            title='Users Control'
-                            data={users}
-                            fetchData={fetchUsers}
-                            total={totalUsers}
-                            onDelete={handleDelete}
-                            onEdit={handleEdit}
-                            rows={['userName', 'email', 'role']}
-                            actions={isSA ? ['edit', 'delete', 'add'] : ['delete']}
-                            userFilter={isSA ? true : false}
-                        />
-            }
+
+            <DataTable
+                title='Users'
+                data={users}
+                fetchData={fetchUsers}
+                total={totalUsers}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+                rows={['userName', 'email', 'role']}
+                actions={isSA ? ['edit', 'delete', 'add'] : ['delete']}
+                userFilter={isSA ? true : false}
+            />
+
         </div>
     );
 };

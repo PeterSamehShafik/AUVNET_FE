@@ -51,89 +51,107 @@ export default function Navbar({ logout }) {
 
     }
 
+    const navLinkClasses = ({ isActive }) =>
+        `px-4 py-2 rounded-md text-xl md:text-2xl font-bold transition-colors duration-300 
+        ${isActive ? 'text-indigo-500 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400'}
+        hover:bg-indigo-200 dark:hover:bg-gray-600`;
+
+
     return <>
-        <nav className="bg-gray-200 shadow shadow-gray-300 w-100 px-8 md:px-auto mb-5">
-            <div className="md:h-16 h-28 mx-auto md:px-4 container flex items-center justify-between flex-wrap md:flex-nowrap">
-                <div className="text-indigo-500 md:order-1">
-                    <Logo className='w-10 h-10' />
+        <nav className="bg-gray-200 dark:bg-gray-800 shadow-md p-4 mb-5">
+            <div className="container mx-auto flex flex-wrap items-center justify-between">
+                {/* Logo */}
+                <div className="flex items-center text-indigo-500 mb-4 md:mb-0">
+                    <Logo className='w-14 h-14' />
                 </div>
-                <div className="text-gray-500 order-3 w-full md:w-auto md:order-2">
-                    <ul className="flex font-semibold justify-between">
-                        {auth ?
-                            ['Home', 'CPanel'].map((ele, idx) =>
-                                <li key={idx} className="md:px-4 md:py-2 hover:text-indigo-400">
-                                    <NavLink
-                                        className={({ isActive }) =>
-                                            isActive ? "text-indigo-500" : ""
-                                        }
-                                        to={ele === 'Home' ? '/' : ele.toLowerCase()}>{ele}</NavLink>
+
+                {/* Navbar items */}
+                <div className="flex-1">
+                    <ul className="flex flex-wrap items-center justify-end md:justify-center md:space-x-4 text-gray-700 dark:text-gray-300">
+                        {auth ? <>
+                            {['Home', 'CPanel'].map((ele, idx) =>
+                                <li key={idx} className="mb-2 md:mb-0">
+                                    <NavLink className={navLinkClasses} to={ele === 'Home' ? '/' : ele.toLowerCase()}>
+                                        {ele}
+                                    </NavLink>
                                 </li>
-                            )
+                            )}
+                            {auth.role === allRoles.U &&
+                                <li className="mb-2 md:mb-0">
+                                    <NavLink className={navLinkClasses} to='wishlist'>
+                                        Wishlist
+                                    </NavLink>
+                                </li>
+                            }
+                        </>
                             :
-                            <li className="md:px-4 md:py-2 hover:text-indigo-400">
-                                <NavLink
-                                    className={({ isActive }) =>
-                                        isActive ? "text-indigo-500" : ""
-                                    }
-                                    to='/'>Home</NavLink>
+                            <li className="mb-2 md:mb-0">
+                                <NavLink className={navLinkClasses} to='/'>
+                                    Home
+                                </NavLink>
                             </li>
                         }
-                        {auth && auth.role === allRoles.U ? <li className="md:px-4 md:py-2 hover:text-indigo-400">
-                            <NavLink
-                                className={({ isActive }) =>
-                                    isActive ? "text-indigo-500" : ""
-                                }
-                                to='wishlist'>Wishlist</NavLink>
-                        </li> : ''}
-                        {mode === 'dark' ?
-                            <div onClick={() => setMode(Mode.Light)} className="h-10 w-10 flex items-center justify-center rounded-lg cursor-pointer hover:text-gray-800 hover:bg-white  hover:duration-300 hover:ease-linear focus:bg-white">
-                                <MdOutlineLightMode size={25} />
-                            </div> :
-                            <div onClick={() => setMode(Mode.Dark)} className="h-10 w-10 flex items-center justify-center rounded-lg cursor-pointer hover:text-gray-800 hover:bg-white  hover:duration-300 hover:ease-linear focus:bg-white">
-                                <MdOutlineDarkMode size={25} />
-                            </div>
-
-                        }
-
                     </ul>
                 </div>
-                <div className="order-2 md:order-3 flex space-x-2">
-                    {auth ?
-                        <div className="flex items-center gap-4 p-4 py-2 bg-gray-800  text-white  rounded-xl shadow-md">
-                            <span className="font-semibold text-lg">Hello, {auth.userName}</span>
-                            {loading ? <>
-                                <LoadingScreen fullScreen={true} />
 
-                                <button
-                                    className="cursor-not-allowed bg-gray-600 hover:bg-gray-500  text-gray-100  rounded-full px-4 py-2 text-sm transition-colors duration-300"
-                                >
-                                    <FiRefreshCcw className="w-6 h-6 ms-2 animate-spin" />
-                                </button>
-                            </>
-                                :
+                {/* Theme toggle and auth actions */}
+                <div className="flex items-center space-x-2">
+                    {/* Theme Toggle */}
+                    <div
+                        onClick={() => setMode(mode === Mode.Dark ? Mode.Light : Mode.Dark)}
+                        className={`h-12 w-12 flex items-center justify-center rounded-full cursor-pointer transition-transform transform hover:scale-110 bg-gray-300 dark:bg-gray-700  hover:bg-gray-400 dark:hover:bg-gray-500`}
+                    >
+                        {mode === Mode.Dark ?
+                            <MdOutlineLightMode size={28} className="text-yellow-500 dark:text-white" />
+                            :
+                            <MdOutlineDarkMode size={28} className="text-gray-800 dark:text-gray-200" />
+                        }
+                    </div>
+
+
+                    {auth ?
+                        <div className="flex items-center gap-4 bg-gray-500 dark:bg-gray-700 text-white dark:text-white p-2 rounded-xl shadow-md">
+                            <span className="font-semibold text-xl">Hello, {auth.userName}</span>
+                            {loading ? (
+                                <>
+                                    <LoadingScreen fullScreen={true} />
+                                    <button
+                                        className="bg-gray-600 dark:bg-gray-500 hover:bg-gray-500 dark:hover:bg-gray-400 text-gray-100 dark:text-gray-300 rounded-full px-4 py-2 text-sm transition-colors duration-300"
+                                        disabled
+                                    >
+                                        <FiRefreshCcw className="w-6 h-6 animate-spin" />
+                                    </button>
+                                </>
+                            ) : (
                                 <button
                                     onClick={handleLogout}
-                                    className="bg-gray-600 hover:bg-gray-500  text-gray-100  rounded-full px-4 py-2 text-sm transition-colors duration-300"
+                                    className="bg-gray-700 dark:bg-gray-500 text-xl hover:bg-gray-600 dark:hover:bg-gray-400 text-gray-100 dark:text-gray-100 rounded-full px-4 py-2 text-sm transition-colors duration-300"
                                 >
                                     Logout
-                                </button>}
+                                </button>
+                            )}
                         </div>
-
                         :
                         <>
-                            <Link to='register' className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-gray-50 rounded-xl flex items-center gap-2">
+                            <Link
+                                to='register'
+                                className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-gray-50 rounded-xl flex items-center gap-2"
+                            >
                                 <span>Sign Up</span>
                                 <FiLogIn size={20} />
                             </Link>
-                            <Link to='login' className="px-4 py-2 bg-slate-500 hover:bg-slate-600 text-gray-50 rounded-xl flex items-center gap-2">
+                            <Link
+                                to='login'
+                                className="px-4 py-2 bg-slate-500 hover:bg-slate-600 text-gray-50 rounded-xl flex items-center gap-2"
+                            >
                                 <span>Login</span>
                             </Link>
                         </>
                     }
-
                 </div>
             </div>
         </nav>
+
     </>
 
 

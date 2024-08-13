@@ -1,19 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Card, CardContent, Typography, Button, Pagination } from '@mui/material';
 import { toast } from 'react-toastify';
 import axios from '../../API/axios.js';
 import LoadingScreen from '../../common/Loading.jsx';
 import ErrorText from '../../common/Error.jsx';
+import { AuthContext } from '../../context/AuthProvider.jsx';
+import { allRoles } from './../../Routes/ProtectedRoute';
+import { CategoryContext } from '../../context/CategoryProvider.jsx';
 
 const Products = () => {
   const [products, setProducts] = useState('loading');
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const { auth } = useContext(AuthContext)
+  const { cat } = useContext(CategoryContext)
+
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`/products?page=${page}&size=9`);
+      const catFilter = cat?.slug ? `&category=${cat.slug}` : ''
+      const response = await axios.get(`/products?page=${page}&size=9${catFilter}`);
       setProducts(response.data.data.products);
       setTotalPages(response.data.data.totalPages);
     } catch (error) {
@@ -24,7 +31,7 @@ const Products = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, [page]);
+  }, [page, cat])
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -48,10 +55,10 @@ const Products = () => {
       {products === 'loading' ? <LoadingScreen /> :
         products === 'error' ? <ErrorText handleRefresh={fetchProducts} /> :
           !products?.length ? <ErrorText handleRefresh={fetchProducts} text='No Products found' /> :
-            <div className="flex-1 p-4 bg-gray-100 dark:bg-gray-900">
+            <div className="flex-1 p-4 bg-gray-200 dark:bg-slate-900 rounded-lg">
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {products?.map((product) => (
-                  <Card key={product._id} className="bg-white dark:bg-gray-800 shadow-md rounded-lg">
+                  <Card key={product._id} className="bg-white dark:bg-gray-800 shadow-md rounded-lg hover:shadow-lg">
                     <CardContent>
                       <Typography variant="h6" component="div" className="font-semibold text-gray-900 dark:text-gray-200">
                         {product.name}
@@ -65,19 +72,22 @@ const Products = () => {
                       <Typography variant="body2" color="textSecondary" className="dark:text-gray-400 mt-2">
                         {product.description}
                       </Typography>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleAddToWishlist(product._id)}
-                        className="mt-4"
-                      >
-                        Add to Wishlist
-                      </Button>
+                      {auth && auth?.role === allRoles.U &&
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => handleAddToWishlist(product._id)}
+                          className="!mt-5 !transition-transform transform hover:scale-105 hover:bg-blue-700"
+                        >
+                          Add to Wishlist
+                        </Button>
+                      }
                     </CardContent>
                   </Card>
+
                 ))}
               </div>
-              <div className="mt-4 flex justify-center">
+              {totalPages > 1 && <div className="mt-4 flex justify-center">
                 <Pagination
                   count={totalPages}
                   page={page}
@@ -85,7 +95,7 @@ const Products = () => {
                   color="primary"
                   className="dark:text-gray-200"
                 />
-              </div>
+              </div>}
             </div>}
     </>
   );

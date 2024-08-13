@@ -56,20 +56,16 @@ const CategoriesControl = () => {
 
     return (
         <div className="px-4">
-            {categories === 'loading' ? <LoadingScreen /> :
-                categories === 'error' ? <ErrorText handleRefresh={fetchCategories} /> :
-                    !categories?.length ? <ErrorText handleRefresh={fetchCategories} text='No categories found' /> :
-                        <DataTable
-                            title='Categories Control'
-                            data={categories}
-                            fetchData={fetchCategories}
-                            total={totalCategories}
-                            onDelete={handleDelete}
-                            onEdit={handleEdit}
-                            rows={['name', 'createdBy']}
-                            actions={['edit', 'delete', 'add']}                            
-                        />
-            }
+            <DataTable
+                title='Categories'
+                data={categories}
+                fetchData={fetchCategories}
+                total={totalCategories}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+                rows={['name', 'createdBy']}
+                actions={['edit', 'delete', 'add']}
+            />
         </div>
     );
 };

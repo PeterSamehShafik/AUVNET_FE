@@ -30,7 +30,7 @@ const ProductsControl = () => {
             setTotalProducts(response.data.data.total)
             setPages(response.data.data.totalPages)
         } catch (error) {
-            toast.error('Failed to fetch products. Please try again later.'); // Show error toast
+            toast.error(error.response?.data?.message || 'Failed to fetch products. Please try again later.'); // Show error toast
             setProducts('error')
         }
     };
@@ -54,32 +54,23 @@ const ProductsControl = () => {
         } catch (error) {
             console.log(error)
             const msg = type === 'remove' ? 'delete' : 'restore'
-            toast.error(`Failed to ${msg} Product Please try again later.`); // Show error toast
+            toast.error(error.response?.data?.message || `Failed to ${msg} Product Please try again later.`); // Show error toast
             setProducts('error')
         }
     };
 
-    const handleEdit = async () => {
-
-    }
-
 
     return (
         <div className="px-4">
-            {products === 'loading' ? <LoadingScreen /> :
-                products === 'error' ? <ErrorText handleRefresh={fetchProducts} /> :
-                    !products?.length ? <ErrorText handleRefresh={fetchProducts} text='No products found' /> :
-                        <DataTable
-                            title='Products Control'
-                            data={products}
-                            fetchData={fetchProducts}
-                            total={totalProducts}
-                            onDelete={handleDelete}
-                            onEdit={handleEdit}
-                            rows={['name', 'description', 'price', 'createdBy', 'category']}
-                            actions={isUser ? ['edit', 'delete', 'add'] : ['edit', 'delete']}
-                        />
-            }
+            <DataTable
+                title='Products'
+                data={products}
+                fetchData={fetchProducts}
+                total={totalProducts}
+                onDelete={handleDelete}
+                rows={['name', 'description', 'price', 'createdBy', 'category']}
+                actions={isUser ? ['edit', 'delete', 'add'] : ['delete']}
+            />
         </div>
     );
 };
