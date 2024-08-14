@@ -52,7 +52,7 @@ export default function Navbar({ logout }) {
     }
 
     const navLinkClasses = ({ isActive }) =>
-        `px-4 py-2 rounded-md text-xl md:text-2xl font-bold transition-colors duration-300 
+        `px-2 py-1 md:px-4 md:py-2 rounded-md text-lg md:text-2xl font-bold transition-colors duration-300 
         ${isActive ? 'text-indigo-500 dark:text-indigo-400' : 'text-gray-600 dark:text-gray-400'}
         hover:bg-indigo-200 dark:hover:bg-gray-600`;
 
@@ -61,9 +61,11 @@ export default function Navbar({ logout }) {
         <nav className="bg-gray-200 dark:bg-gray-800 shadow-md p-4 mb-5">
             <div className="container mx-auto flex flex-wrap items-center justify-between">
                 {/* Logo */}
-                <div className="flex items-center text-indigo-500 mb-4 md:mb-0">
-                    <Logo className='w-14 h-14' />
-                </div>
+                <Link to='/'>
+                    <div className="flex items-center text-indigo-500 mb-4 md:mb-0 cursor-pointer">
+                        <Logo className='w-10 h-10 md:w-14 md:h-14' />
+                    </div>
+                </Link>
 
                 {/* Navbar items */}
                 <div className="flex-1">

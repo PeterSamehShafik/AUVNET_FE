@@ -19,6 +19,7 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
+      setProducts('loading')
       const catFilter = cat?.slug ? `&category=${cat.slug}` : ''
       const response = await axios.get(`/products?page=${page}&size=9${catFilter}`);
       setProducts(response.data.data.products);
@@ -31,7 +32,11 @@ const Products = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, [page, cat])
+  }, [page])
+  useEffect(() => {
+    setPage(1)
+    fetchProducts();
+  }, [cat])
 
   const handleChange = (event, value) => {
     setPage(value);
