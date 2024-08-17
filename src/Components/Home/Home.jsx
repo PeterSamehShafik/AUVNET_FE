@@ -9,7 +9,7 @@ const HomePage = () => {
   useChangeTitle('Home Page');
 
   return (
-    <div className="flex flex-col p-6 md:flex-row">
+    <div className="flex flex-col py-6 md:flex-row">
       <div className="hidden md:block">
         <div className="w-40 md:w-64 bg-gray-200 dark:bg-gray-800 md:p-4 p-1 rounded-lg shadow-md ">
           <h2 className="text-lg md:text-xl font-semibold mb-4 text-gray-900 dark:text-gray-200 p-2">Categories</h2>
