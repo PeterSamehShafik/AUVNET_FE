@@ -29,7 +29,7 @@ function App() {
 
   const logout = async () => {
     try {
-      const res = await axios.get("/users/logout");
+      const res = await axios.post("/users/logout");
       setAuth(null)
     } catch (err) {
       console.log(err)
