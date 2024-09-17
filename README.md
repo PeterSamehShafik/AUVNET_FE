@@ -1,70 +1,50 @@
-# Getting Started with Create React App
+# SysCommerce
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+This is the frontend of **SysCommerce**, a full-stack web application designed for managing products, categories, and user roles with distinct access levels. The frontend provides an intuitive user experience with features for users, admins, and super admins, integrated with secure authentication and role-based authorization mechanisms.
 
-In the project directory, you can run:
+## Live Demo
 
-### `npm start`
+🎉 [Demo Link](https://syscommerce.netlify.app)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Repositories
+- **Backend Repo**: [Backend Repo Link](https://github.com/ahmedessamrizk/SysCommerce_BE)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Features
 
-### `npm test`
+### User
+- Perform CRUD operations on products.
+- Add, view, and remove items from the wishlist.
+- Toggle dark mode for better user experience.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Admin
+- View and delete user accounts.
+- View and delete products.
+- Perform CRUD operations on categories.
 
-### `npm run build`
+### Super Admin
+- Manage admin accounts with full CRUD capabilities.
+- View and delete products.
+- Perform CRUD operations on categories.
+- View and delete user accounts.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Tech Stack
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **React**: Component-based architecture for building dynamic user interfaces.
+- **Tailwind CSS**: For responsive and modern styling.
+- **MUI**: Pre-built, customizable UI components.
+- **Axios**: For handling API requests.
+- **React Router**: For seamless navigation and routing.
+- **React Context API**: Used for global state management across components.
+- **Formik & Yup**: For form handling and data validation.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Security
 
-### `npm run eject`
+- **Role-based Authorization**: Users, admins, and super admins have different access levels, with distinct views and actions.
+- **Form Validation**: Forms are validated using Formik and Yup to ensure input accuracy and security.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Feel free to open issues or submit pull requests if you find any bugs or have suggestions for improvements!
